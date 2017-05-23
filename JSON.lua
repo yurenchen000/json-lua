@@ -1280,7 +1280,11 @@ function encode_value(self, value, parents, etc, options, indent, for_key)
       return tostring(value)
 
    elseif type(value) ~= 'table' then
-      self:onEncodeError("can't convert " .. type(value) .. " to JSON", etc)
+      if tostring(value) == 'userdata: (nil)' then -- fix null from lua-cjson
+	     return 'null'
+	  else
+         self:onEncodeError("can't convert " .. type(value) .. " to JSON", etc)
+	  end
 
    elseif getmetatable(value) == isNumber then
       return tostring(value)
